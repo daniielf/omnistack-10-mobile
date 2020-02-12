@@ -4,11 +4,12 @@ import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 
 import HomePage from './src/pages/home/Home';
-
+import ProfilePage from './src/pages/profile/Profile';
 
 const Routes = createAppContainer(
   createStackNavigator({
-    HomePage
+    HomePage,
+    ProfilePage
   }, {
     defaultNavigationOptions: {
       headerStyle: {
