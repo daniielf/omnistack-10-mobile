@@ -8,8 +8,12 @@ import ProfilePage from './src/pages/profile/Profile';
 
 const Routes = createAppContainer(
   createStackNavigator({
-    HomePage,
-    ProfilePage
+    Home : {
+      screen: HomePage
+    },
+    Profile: {
+      screen: ProfilePage
+    }
   }, {
     defaultNavigationOptions: {
       headerStyle: {

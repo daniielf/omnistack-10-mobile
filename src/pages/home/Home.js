@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Linking } from 'react-native';
 import MapView, { Marker, Callout } from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import { StackActions } from 'react-navigation';
@@ -15,10 +16,7 @@ const HomePage = ({navigation}) => {
   const DEFAULT_ZOOM = 12;
   useEffect(( ) => {
     loadUserLocation();
-
-    // setTimeout(() => {
-      navigation.push('Profile');
-    // }, 10000)
+    navigation.navigate('Profile');
   }, []);
 
   function loadUserLocation() {
@@ -52,14 +50,14 @@ const HomePage = ({navigation}) => {
     <>
       <MapView
         region={mapRegion}
-      style={styles.mapView}>
+        style={styles.mapView}>
         { locationLoaded && (
           <Marker
             coordinate={{ latitude: userLocation.lat, longitude: userLocation.lng }}>
             <Image 
               style={styles.avatarImage}
               source={{uri: "https://avatars2.githubusercontent.com/u/9057186?s=460&v=4"}} />
-            <Callout>
+            <Callout onPress={() => {navigation.navigate('Profile')}}>
               <View style={styles.popUpView}>
                 <Text style={styles.popUpTitle}>Username</Text>
                 <Text style={styles.popUpText}>Bio</Text>
