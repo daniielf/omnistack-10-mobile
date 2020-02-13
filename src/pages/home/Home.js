@@ -6,17 +6,17 @@ import { StackActions } from 'react-navigation';
 import ProfilePage from '../profile/Profile';
 
 import styles from './Styles';
-import { Platform, View, Text, Image } from 'react-native';
+import { Platform, View, Text, Image, TextInput, TouchableOpacity } from 'react-native';
 
 const HomePage = ({navigation}) => {
   const [userLocation, setUserLocation] = useState({});
+  const [searchText, setText] = useState('');
   const [locationLoaded, setFinishedLoading] = useState(false);
   const [mapRegion, setRegion] = useState({ latitude: 0, longitude: 0,  latitudeDelta: 1, longitudeDelta: 1});
 
   const DEFAULT_ZOOM = 12;
   useEffect(( ) => {
     loadUserLocation();
-    navigation.navigate('Profile');
   }, []);
 
   function loadUserLocation() {
@@ -48,9 +48,26 @@ const HomePage = ({navigation}) => {
 
   return (
     <>
+    <View style={styles.inputFloating}>
+            <TextInput
+              style={styles.searchInput}
+              value={searchText}
+              onChangeText={(e) => setText(e)}
+              clearButtonMode="always"
+              on
+              placeholder="Buscar por tecnologia..."
+            />
+            <View style={styles.buttonArea}>
+              <TouchableOpacity style={styles.searchButton}>
+                <Image style={styles.targetImage} source={{uri: "https://images.vexels.com/media/users/3/128866/isolated/preview/9d104cd78be9c669adf883bf1eb37c92-target-icon-svg-by-vexels.png"}} />
+              </TouchableOpacity>
+            </View>
+            
+          </View>
       <MapView
         region={mapRegion}
         style={styles.mapView}>
+          
         { locationLoaded && (
           <Marker
             coordinate={{ latitude: userLocation.lat, longitude: userLocation.lng }}>
