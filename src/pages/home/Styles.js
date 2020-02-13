@@ -7,6 +7,14 @@ const styles = StyleSheet.create({
     width: '100%',
     zIndex: -1
   },
+  activityIndicatorView: {
+    position: 'absolute',
+    height: '100%',
+    width: '100%',
+    backgroundColor: '#000000AA',
+    zIndex: 999,
+    justifyContent: 'center'
+  },
   avatarImage: {
     height: 50,
     width: 50,

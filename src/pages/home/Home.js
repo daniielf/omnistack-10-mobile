@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Platform, View, Text, Image, TextInput, TouchableOpacity } from 'react-native';
+import { Platform, View, Text, Image, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native';
 
 import MapView, { Marker, Callout } from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
@@ -9,9 +9,7 @@ import ProfileService from '../../services/ProfileService';
 import styles from './Styles';
 
 const HomePage = ({navigation}) => {
-  const [userLocation, setUserLocation] = useState({}, (test) => {
-    console.log(test);
-  });
+  const [userLocation, setUserLocation] = useState({});
   const [searchText, setText] = useState('');
   const [locationLoaded, setFinishedLoading] = useState(false);
   const [mapRegion, setRegion] = useState({ latitude: 0, longitude: 0,  latitudeDelta: 1, longitudeDelta: 1});
@@ -37,9 +35,6 @@ const HomePage = ({navigation}) => {
   }
 
   function handleInput(text) {
-    // console.log(ProfileService);
-    // console.log(service);
-    // ProfileService.fetchAllProfiles();
     ProfileService.fetchAllProfiles(text);
   }
 
@@ -67,6 +62,13 @@ const HomePage = ({navigation}) => {
 
   return (
     <>
+    {
+      !locationLoaded && (
+        <View style={styles.activityIndicatorView}>
+          <ActivityIndicator size="large" color="#CACACA" />
+        </View> 
+      )
+    }
       <View style={styles.inputFloating}>
         <DelayInput
           style={styles.searchInput}
