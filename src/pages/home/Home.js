@@ -26,13 +26,24 @@ const HomePage = ({navigation}) => {
     Geolocation.getCurrentPosition((pos) => {
       const lat =  pos.coords.latitude;
       const lng =  pos.coords.longitude;
-
+      console.log(lat, lng);
       setUserLocation({lat, lng});
       setMapPosition({lat, lng});
       setFinishedLoading(true);
     }, err => {
       console.log('Err', err);
     });
+  }
+
+  function resetPositionToDefault() {
+    const initPos = {
+      latitude: userLocation.lat,
+      longitude: userLocation.lng,
+      latitudeDelta: 0.025,
+      longitudeDelta: 0.025
+    };
+
+    setRegion(initPos)
   }
 
   // location : { lat, lng}
@@ -48,31 +59,33 @@ const HomePage = ({navigation}) => {
 
   return (
     <>
-    <View style={styles.inputFloating}>
-            <TextInput
-              style={styles.searchInput}
-              value={searchText}
-              onChangeText={(e) => setText(e)}
-              clearButtonMode="always"
-              on
-              placeholder="Buscar por tecnologia..."
-            />
-            <View style={styles.buttonArea}>
-              <TouchableOpacity style={styles.searchButton}>
-                <Image style={styles.targetImage} source={{uri: "https://images.vexels.com/media/users/3/128866/isolated/preview/9d104cd78be9c669adf883bf1eb37c92-target-icon-svg-by-vexels.png"}} />
-              </TouchableOpacity>
-            </View>
-            
-          </View>
+      <View style={styles.inputFloating}>
+        <TextInput
+          style={styles.searchInput}
+          value={searchText}
+          onChangeText={(e) => setText(e)}
+          clearButtonMode="always"
+          on
+          placeholder="Buscar por tecnologia..."
+        />
+        <View style={styles.buttonArea}>
+          { locationLoaded && (
+            <TouchableOpacity style={styles.searchButton} onPress={resetPositionToDefault}>
+              <Image style={styles.targetImage} source={{uri: "https://images.vexels.com/media/users/3/128866/isolated/preview/9d104cd78be9c669adf883bf1eb37c92-target-icon-svg-by-vexels.png"}} />
+            </TouchableOpacity>
+          ) }
+        </View>
+        
+      </View>
       <MapView
+        compassOffset={{x: 100, y: 100}}
         region={mapRegion}
         style={styles.mapView}>
-          
         { locationLoaded && (
           <Marker
             coordinate={{ latitude: userLocation.lat, longitude: userLocation.lng }}>
             <Image 
-              style={styles.avatarImage}
+              style={{...styles.avatarImage, borderWidth: 2}}
               source={{uri: "https://avatars2.githubusercontent.com/u/9057186?s=460&v=4"}} />
             <Callout onPress={() => {navigation.navigate('Profile')}}>
               <View style={styles.popUpView}>

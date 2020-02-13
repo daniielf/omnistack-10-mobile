@@ -7,6 +7,11 @@ const styles = StyleSheet.create({
     width: '100%',
     zIndex: -1
   },
+  avatarImage: {
+    height: 50,
+    width: 50,
+    borderRadius: 25
+  },
   popUpView: {
     width: 200
   },
