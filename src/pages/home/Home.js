@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { Linking } from 'react-native';
-import MapView, { Marker, Callout } from 'react-native-maps';
-import Geolocation from '@react-native-community/geolocation';
-import { StackActions } from 'react-navigation';
-import ProfilePage from '../profile/Profile';
-
-import styles from './Styles';
 import { Platform, View, Text, Image, TextInput, TouchableOpacity } from 'react-native';
 
+import MapView, { Marker, Callout } from 'react-native-maps';
+import Geolocation from '@react-native-community/geolocation';
+import DelayInput from "react-native-debounce-input";
+
+import ProfileService from '../../services/ProfileService';
+import styles from './Styles';
+
 const HomePage = ({navigation}) => {
-  const [userLocation, setUserLocation] = useState({});
+  const [userLocation, setUserLocation] = useState({}, (test) => {
+    console.log(test);
+  });
   const [searchText, setText] = useState('');
   const [locationLoaded, setFinishedLoading] = useState(false);
   const [mapRegion, setRegion] = useState({ latitude: 0, longitude: 0,  latitudeDelta: 1, longitudeDelta: 1});
@@ -26,13 +28,19 @@ const HomePage = ({navigation}) => {
     Geolocation.getCurrentPosition((pos) => {
       const lat =  pos.coords.latitude;
       const lng =  pos.coords.longitude;
-      console.log(lat, lng);
       setUserLocation({lat, lng});
       setMapPosition({lat, lng});
       setFinishedLoading(true);
     }, err => {
       console.log('Err', err);
     });
+  }
+
+  function handleInput(text) {
+    // console.log(ProfileService);
+    // console.log(service);
+    // ProfileService.fetchAllProfiles();
+    ProfileService.fetchAllProfiles(text);
   }
 
   function resetPositionToDefault() {
@@ -60,10 +68,12 @@ const HomePage = ({navigation}) => {
   return (
     <>
       <View style={styles.inputFloating}>
-        <TextInput
+        <DelayInput
           style={styles.searchInput}
           value={searchText}
-          onChangeText={(e) => setText(e)}
+          onChangeText={(e) => {handleInput(e)}}
+          delayTimeout={600}
+          minLength={3}
           clearButtonMode="always"
           on
           placeholder="Buscar por tecnologia..."
