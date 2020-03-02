@@ -1,11 +1,20 @@
 import Axios from 'axios';
-import { ENDPOINT_PATH } from '../../appConfigs';
+import ENDPOINTS from '../../appConfigs';
 
-const SERVICE_ENDPOINT = 'user';
+const SERVICE_ENDPOINT = 'users';
 
 class ProfileService {
   static fetchAllProfiles = (text) => {
-    console.log('Function Called Successfully:', text);
+    return new Promise((resolve, reject) => {
+      Axios.get(ENDPOINTS.API + SERVICE_ENDPOINT + '/').then((res) => {
+        if (res.data) {
+          resolve(res.data);
+        }
+      }).catch((err) => {
+        console.log('ERROR:', err);
+        reject({message: err})
+      })
+    });
   }
 };
 export default ProfileService;

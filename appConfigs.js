@@ -1,3 +1,5 @@
-const ENDPOINT_PATH = 'http://localhost:3333';
+const ENDPOINTS = {
+  API: 'http://localhost:3333/'
+};
 
-export default { ENDPOINT_PATH };
+export default ENDPOINTS ;

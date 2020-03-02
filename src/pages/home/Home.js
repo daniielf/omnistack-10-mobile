@@ -1,20 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { Platform, View, Text, Image, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native';
 
-import MapView, { Marker, Callout } from 'react-native-maps';
+import MapView, { Marker, Callout, PROVIDER_GOOGLE } from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import DelayInput from "react-native-debounce-input";
 
 import ProfileService from '../../services/ProfileService';
 import styles from './Styles';
+import CustomMapStyle from '../../components/MapStyle';
 
 const HomePage = ({navigation}) => {
   const [userLocation, setUserLocation] = useState({});
   const [searchText, setText] = useState('');
+  const [users, setUsers] = useState([]);
   const [locationLoaded, setFinishedLoading] = useState(false);
   const [mapRegion, setRegion] = useState({ latitude: 0, longitude: 0,  latitudeDelta: 1, longitudeDelta: 1});
 
-  const DEFAULT_ZOOM = 12;
   useEffect(( ) => {
     loadUserLocation();
   }, []);
@@ -24,8 +25,8 @@ const HomePage = ({navigation}) => {
       Geolocation.requestAuthorization();
     }
     Geolocation.getCurrentPosition((pos) => {
-      const lat =  pos.coords.latitude;
-      const lng =  pos.coords.longitude;
+      const lat = pos.coords.latitude;
+      const lng = pos.coords.longitude;
       setUserLocation({lat, lng});
       setMapPosition({lat, lng});
       setFinishedLoading(true);
@@ -34,8 +35,14 @@ const HomePage = ({navigation}) => {
     });
   }
 
-  function handleInput(text) {
-    ProfileService.fetchAllProfiles(text);
+  function fetchUsers(text) {
+    ProfileService.fetchAllProfiles(text).then((users) => {
+      console.log(users);
+      console.log(users.map((e) => e.location.coordinates));
+      setUsers(users);
+    }).catch((err) => {
+      console.log(err);
+    });
   }
 
   function resetPositionToDefault() {
@@ -73,7 +80,7 @@ const HomePage = ({navigation}) => {
         <DelayInput
           style={styles.searchInput}
           value={searchText}
-          onChangeText={(e) => {handleInput(e)}}
+          onChangeText={(e) => {fetchUsers(e)}}
           delayTimeout={600}
           minLength={3}
           clearButtonMode="always"
@@ -90,8 +97,11 @@ const HomePage = ({navigation}) => {
         
       </View>
       <MapView
-        compassOffset={{x: 100, y: 100}}
+        compassOffset={{x: 2, y: 2}}
+        showsCompass={true}
         region={mapRegion}
+        // customMapStyle={CustomMapStyle}
+        // provider={PROVIDER_GOOGLE}
         style={styles.mapView}>
         { locationLoaded && (
           <Marker
@@ -108,6 +118,13 @@ const HomePage = ({navigation}) => {
               </Callout>            
             
           </Marker>
+        )}
+        { users && (users.map((user) => {
+          return (<Marker
+                    key={user.id}
+                    coordinate={{latitude: user.location.coordinates[1], longitude: user.location.coordinates[0]}}>
+                  </Marker>)
+          })
         )}
 
       </MapView>
